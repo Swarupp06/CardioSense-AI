@@ -13,6 +13,7 @@ CardioSense AI
 
 from pathlib import Path
 
+import joblib
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
@@ -31,6 +32,13 @@ PROCESSED_DATA_PATH = (
 )
 
 PROCESSED_DATA_PATH.mkdir(parents=True, exist_ok=True)
+
+MODEL_PATH = (
+    Path(__file__).resolve().parent.parent.parent
+    / "models"
+)
+
+MODEL_PATH.mkdir(parents=True, exist_ok=True)
 
 
 def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
@@ -93,6 +101,12 @@ def scale_features(
     X_test_scaled = pd.DataFrame(
         scaler.transform(X_test),
         columns=X_test.columns,
+    )
+
+    # Save fitted scaler
+    joblib.dump(
+        scaler,
+        MODEL_PATH / "scaler.pkl"
     )
 
     return X_train_scaled, X_test_scaled
@@ -161,3 +175,10 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+MODEL_PATH = (
+    Path(__file__).resolve().parent.parent.parent
+    / "models"
+)
+
+MODEL_PATH.mkdir(parents=True, exist_ok=True)    
